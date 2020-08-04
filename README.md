@@ -13,4 +13,10 @@ Una vez instalado y arrancado docker desktop escribir el comando:
 docker-compose up -d
 ```
 
+Una vez levantado el entorno dispondremos de 3 contenedores, uno para Tomcat, otro para MySQL y otro mas para PHPMyAdmin.
 
+La ruta para acceder a PHPMyAdmin es:
+
+```url
+http://localhost:8183
+```
