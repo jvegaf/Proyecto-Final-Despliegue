@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: agenda_db
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: usuario
+    ports:
+      - 3306:3306
+    volumes:
+     - ./db:/docker-entrypoint-initdb.d
+  
+  web:
+    image: tomcat:latest
+    # Environment variables do not appear to be getting loaded the first time Tomcat starts!
+    environment:
+      JDBC_URL: jdbc:mysql://db:3306/agenda_db?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true
+      JDBC_USER: usuario
+      JDBC_PASS: usuario
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
+    ports:
+      - 8180:8080
+      - 8000:8000
+    volumes:
+      - ./out/artifacts/agenda/:/usr/local/tomcat/webapps/
+    links:
+      - db
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: dev_pma
+    links:
+      - db
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8183:80
